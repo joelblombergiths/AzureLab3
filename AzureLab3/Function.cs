@@ -34,7 +34,7 @@ public class Function
         {
             log.LogInformation("Fetching all recipes");
 
-            List<RecipeModel> recipes = await _context.Collection.Find(Builders<RecipeModel>.Filter.Empty).ToListAsync();
+            List<RecipeModel> recipes = await _context.CookBook.Find(Builders<RecipeModel>.Filter.Empty).ToListAsync();
 
             return new OkObjectResult(recipes);
         }
@@ -53,7 +53,7 @@ public class Function
         {
             log.LogInformation("Fetching specific recipe");
 
-            RecipeModel recipe = await _context.Collection.Find(r => r.Id == id).FirstOrDefaultAsync();
+            RecipeModel recipe = await _context.CookBook.Find(r => r.Id == id).FirstOrDefaultAsync();
 
             return recipe == null ? new NotFoundResult() : new OkObjectResult(recipe);
         }
@@ -79,7 +79,7 @@ public class Function
                 Name = newRecipe.Name
             };
 
-            await _context.Collection.InsertOneAsync(recipe);
+            await _context.CookBook.InsertOneAsync(recipe);
 
             return new OkObjectResult(recipe);
         }
@@ -98,7 +98,7 @@ public class Function
         {
             log.LogInformation("Updating recipe");
 
-            RecipeModel recipe = await _context.Collection.Find(r => r.Id == id).FirstOrDefaultAsync();
+            RecipeModel recipe = await _context.CookBook.Find(r => r.Id == id).FirstOrDefaultAsync();
             if (recipe == null) return new NotFoundResult();
 
             string reqData = await new StreamReader(req.Body).ReadToEndAsync();
@@ -106,7 +106,7 @@ public class Function
 
             recipe.Name = updateRecipe.Name;
 
-            ReplaceOneResult res = await _context.Collection.ReplaceOneAsync(r => r.Id == id, recipe);
+            ReplaceOneResult res = await _context.CookBook.ReplaceOneAsync(r => r.Id == id, recipe);
 
             return (res.IsAcknowledged && res.ModifiedCount > 0) ? new OkObjectResult(recipe) : new NotFoundResult();
         }
@@ -125,7 +125,7 @@ public class Function
         {
             log.LogInformation("deleting recipe");
 
-            DeleteResult res = await _context.Collection.DeleteOneAsync(r => r.Id == id);
+            DeleteResult res = await _context.CookBook.DeleteOneAsync(r => r.Id == id);
 
             return (res.IsAcknowledged && res.DeletedCount > 0) ? new OkResult() : new NotFoundResult();
         }
@@ -144,7 +144,7 @@ public class Function
         {
             log.LogInformation("Adding ingredients");
 
-            RecipeModel recipe = await _context.Collection.Find(r => r.Id == id).FirstOrDefaultAsync();
+            RecipeModel recipe = await _context.CookBook.Find(r => r.Id == id).FirstOrDefaultAsync();
             if (recipe == null) return new NotFoundResult();
 
             string reqData = await new StreamReader(req.Body).ReadToEndAsync();
@@ -161,7 +161,9 @@ public class Function
                 else ingredient.Quantity += i.Quantity;
             });
 
-            ReplaceOneResult res = await _context.Collection.ReplaceOneAsync(r => r.Id == id, recipe);
+            recipe.Done = false;
+
+            ReplaceOneResult res = await _context.CookBook.ReplaceOneAsync(r => r.Id == id, recipe);
 
             return (res.IsAcknowledged && res.ModifiedCount > 0) ? new OkObjectResult(recipe) : new NotFoundResult();
         }
@@ -180,7 +182,7 @@ public class Function
         {
             log.LogInformation("Adding ingredients");
 
-            RecipeModel recipe = await _context.Collection.Find(r => r.Id == recipeId).FirstOrDefaultAsync();
+            RecipeModel recipe = await _context.CookBook.Find(r => r.Id == recipeId).FirstOrDefaultAsync();
             if (recipe == null) return new NotFoundObjectResult("Recipe not found");
 
             IngredientModel ingredient = recipe.Ingredients.FirstOrDefault(i => i.Id == ingredientId);
@@ -190,8 +192,9 @@ public class Function
             UpdateIngredient updateIngredient = JsonConvert.DeserializeObject<UpdateIngredient>(reqData);
 
             ingredient.Added = updateIngredient.Added;
+            recipe.Done = recipe.Ingredients.All(i => i.Added);
 
-            ReplaceOneResult res = await _context.Collection.ReplaceOneAsync(r => r.Id == recipeId, recipe);
+            ReplaceOneResult res = await _context.CookBook.ReplaceOneAsync(r => r.Id == recipeId, recipe);
 
             return (res.IsAcknowledged && res.ModifiedCount > 0) ? new OkObjectResult(recipe) : new NotFoundResult();
         }
