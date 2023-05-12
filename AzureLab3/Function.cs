@@ -27,8 +27,8 @@ public class Function
     }
 
     [FunctionName("GetAllRecipes")]
-    public async Task<IActionResult> GetAllRecipes([HttpTrigger(AuthorizationLevel.Function, "get", Route = "recipes")]
-        HttpRequest req, ILogger log)
+    public async Task<IActionResult> GetAllRecipes([HttpTrigger(AuthorizationLevel.Function,
+        "get", Route = "recipes")] HttpRequest req, ILogger log)
     {
         try
         {
@@ -46,8 +46,8 @@ public class Function
     }
 
     [FunctionName("GetRecipeById")]
-    public async Task<IActionResult> GetRecipeById([HttpTrigger(AuthorizationLevel.Function, "get", Route = "recipes/{id}")]
-        HttpRequest req, ILogger log, string id)
+    public async Task<IActionResult> GetRecipeById([HttpTrigger(AuthorizationLevel.Function,
+        "get", Route = "recipes/{id}")] HttpRequest req, ILogger log, string id)
     {
         try
         {
@@ -65,8 +65,8 @@ public class Function
     }
 
     [FunctionName("CreateRecipe")]
-    public async Task<IActionResult> NewRecipe([HttpTrigger(AuthorizationLevel.Function, "post", Route = "recipes")]
-        HttpRequest req, ILogger log)
+    public async Task<IActionResult> NewRecipe([HttpTrigger(AuthorizationLevel.Function,
+            "post", Route = "recipes")] HttpRequest req, ILogger log)
     {
         try
         {
@@ -91,8 +91,8 @@ public class Function
     }
 
     [FunctionName("UpdateRecipe")]
-    public async Task<IActionResult> UpdateRecipe([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "recipes/{id}")]
-        HttpRequest req, ILogger log, string id)
+    public async Task<IActionResult> UpdateRecipe([HttpTrigger(AuthorizationLevel.Function,
+        "put", Route = "recipes/{id}")] HttpRequest req, ILogger log, string id)
     {
         try
         {
@@ -118,8 +118,8 @@ public class Function
     }
 
     [FunctionName("DeleteRecipe")]
-    public async Task<IActionResult> DeleteShoppingCartItem([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "recipes/{id}")]
-        HttpRequest req, ILogger log, string id)
+    public async Task<IActionResult> DeleteShoppingCartItem([HttpTrigger(AuthorizationLevel.Function,
+        "delete", Route = "recipes/{id}")] HttpRequest req, ILogger log, string id)
     {
         try
         {
@@ -137,8 +137,8 @@ public class Function
     }
 
     [FunctionName("AddIngredients")]
-    public async Task<IActionResult> AddIngredients([HttpTrigger(AuthorizationLevel.Function, "post", Route = "recipes/{id}/ingredients")]
-        HttpRequest req, ILogger log, string id)
+    public async Task<IActionResult> AddIngredients([HttpTrigger(AuthorizationLevel.Function, 
+        "post", Route = "recipes/{id}/ingredients")] HttpRequest req, ILogger log, string id)
     {
         try
         {
@@ -175,8 +175,8 @@ public class Function
     }
 
     [FunctionName("EditIngredient")]
-    public async Task<IActionResult> EditIngredients([HttpTrigger(AuthorizationLevel.Function, "patch", Route = "recipes/{recipeId}/ingredients/{ingredientId}")]
-        HttpRequest req, ILogger log, string recipeId, string ingredientId)
+    public async Task<IActionResult> EditIngredients([HttpTrigger(AuthorizationLevel.Function, 
+        "patch", Route = "recipes/{recipeId}/ingredients/{ingredientId}")] HttpRequest req, ILogger log, string recipeId, string ingredientId)
     {
         try
         {
