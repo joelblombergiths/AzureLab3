@@ -226,7 +226,7 @@ public class Function
                 {
                     Name = i.Name,
                     Quantity = i.Quantity,
-                    Unit = UnitOfMeasure.Validate(i.Unit) ? i.Unit : throw new($"Unknown unit, available units ({string.Join(",", UnitOfMeasure.Units.ToArray())})")
+                    Unit = UnitOfMeasure.Validate(i.Unit) ? i.Unit : throw new($"Unknown unit, available units  QWAE({string.Join(",", UnitOfMeasure.Units.ToArray())})")
                 });
                 else ingredient.Quantity += i.Quantity;
             });
